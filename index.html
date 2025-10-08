@@ -1,0 +1,344 @@
+<!doctype html>
+<!--
+  Revista Escolar - Prototipo Estático
+  - HTML/CSS/JS todo en un archivo
+  - Contenido: Noticias de la banda, gobierno estudiantil, actividades escolares, perfiles de estudiantes y profesores
+  - Requisitos: responsive, accesible, moderno y sin base de datos (estático)
+  - Instrucciones de despliegue: subir este archivo a GitHub Pages (branch main / gh-pages) o arrastrar a Netlify.
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Revista Escolar • Estación Escolar</title>
+  <meta name="description" content="Revista escolar: noticias de la banda, gobierno estudiantil, actividades y perfiles. Sitio estático, moderno y responsive." />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <style>
+    :root{
+      --bg:#0f1724; /* dark navy */
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent1:#ff7eb6; /* pink */
+      --accent2:#7ee7ff; /* cyan */
+      --glass: rgba(255,255,255,0.06);
+      --radius:14px;
+      --maxw:1100px;
+      --shadow: 0 6px 18px rgba(2,6,23,0.45);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #0b1220 0%, #071028 60%);
+      color:#0b1220;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:30px 18px;
+      display:flex;
+      justify-content:center;
+      font-size:16px;
+    }
+    .site{
+      width:100%;
+      max-width:var(--maxw);
+    }
+    header.top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;color:white;text-decoration:none
+    }
+    .logo{
+      width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:#072133;font-weight:700;font-size:20px
+    }
+    .brand h1{margin:0;font-size:18px}
+    .brand p{margin:0;font-size:12px;opacity:0.9}
+
+    nav{display:flex;gap:10px;align-items:center}
+    nav a{color:rgba(255,255,255,0.92);text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:600}
+    nav a:hover{background:rgba(255,255,255,0.04)}
+
+    .hero{
+      background: linear-gradient(90deg, rgba(255,126,182,0.12), rgba(126,231,255,0.06));
+      padding:18px;border-radius:16px;display:flex;gap:18px;align-items:center;margin-bottom:18px;box-shadow:var(--shadow);
+    }
+    .hero .left{flex:1}
+    .hero h2{margin:0;font-size:22px;color:white}
+    .hero p{margin:6px 0 0 0;color:rgba(255,255,255,0.9)}
+    .cta{
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#072133;padding:10px 14px;border-radius:12px;border:none;font-weight:700;cursor:pointer
+    }
+
+    .controls{display:flex;gap:10px;align-items:center;margin:14px 0}
+    .search{flex:1;display:flex;align-items:center;background:var(--glass);padding:8px;border-radius:10px}
+    .search input{flex:1;background:transparent;border:0;color:white;outline:none;padding:8px}
+    .tags{display:flex;gap:8px}
+    .tag{padding:8px 10px;border-radius:999px;background:rgba(255,255,255,0.05);cursor:pointer;color:white;font-weight:600}
+    .tag.active{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#072133}
+
+    main{display:grid;grid-template-columns: 1fr 360px;gap:18px}
+    @media (max-width:980px){main{grid-template-columns:1fr}}
+
+    /* Feed */
+    .feed{display:grid;gap:14px}
+    .card{background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(2,6,23,0.12);display:flex;gap:0;align-items:stretch}
+    .card .media{width:40%;min-width:160px;height:180px;object-fit:cover}
+    .card .content{padding:14px;flex:1}
+    .meta{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px}
+    .title{font-size:18px;margin:8px 0 6px 0}
+    .excerpt{color:#334155}
+    .readmore{display:inline-block;margin-top:12px;padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(2,6,23,0.06);cursor:pointer}
+
+    /* Sidebar */
+    aside.sidebar{background:linear-gradient(180deg,rgba(255,255,255,0.98),#ffffff);padding:14px;border-radius:12px;height:max-content}
+    .widget{margin-bottom:12px}
+    .widget h3{margin:0 0 8px 0}
+    .small-list{display:flex;flex-direction:column;gap:8px}
+    .small-list a{display:flex;gap:12px;align-items:center;text-decoration:none;color:#0b1220}
+    .small-list img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+
+    footer{margin-top:18px;color:rgba(255,255,255,0.65);text-align:center;font-size:13px}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:80;padding:20px}
+    .modal .box{background:white;border-radius:12px;max-width:880px;width:100%;padding:18px;max-height:85vh;overflow:auto}
+    .close{float:right;border:0;background:transparent;font-size:20px;cursor:pointer}
+
+    /* small screens */
+    @media (max-width:720px){
+      .card{flex-direction:column}
+      .card .media{width:100%;height:200px}
+    }
+  </style>
+</head>
+<body>
+  <div class="site" id="site">
+    <header class="top">
+      <a class="brand" href="#">
+        <div class="logo">RE</div>
+        <div>
+          <h1>Revista Escolar</h1>
+          <p>Noticias & Actualidad • Banda • Gobierno Estudiantil</p>
+        </div>
+      </a>
+      <nav aria-label="Navegación principal">
+        <a href="#banda">Banda</a>
+        <a href="#gobierno">Gobierno</a>
+        <a href="#actividades">Actividades</a>
+        <a href="#profesores">Perfiles</a>
+      </nav>
+    </header>
+
+    <section class="hero" role="region" aria-labelledby="hero-title">
+      <div class="left">
+        <h2 id="hero-title">Edición escolar • Primavera</h2>
+        <p>Bienvenido a la revista digital del colegio. Aquí encontrarás las últimas noticias de la banda, decisiones del gobierno estudiantil, actividades y perfiles destacados.</p>
+      </div>
+      <div>
+        <button class="cta" onclick="document.getElementById('hero').scrollIntoView({behavior:'smooth'})">Explorar</button>
+      </div>
+    </section>
+
+    <div class="controls">
+      <div class="search" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:0.9;margin-right:8px"><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input id="search" placeholder="Buscar noticias, profesores, actividades..." aria-label="Buscar noticias" />
+      </div>
+      <div class="tags" role="tablist">
+        <div class="tag active" data-tag="all" onclick="filterTag('all', this)">Todas</div>
+        <div class="tag" data-tag="banda" onclick="filterTag('banda', this)">Banda</div>
+        <div class="tag" data-tag="gobierno" onclick="filterTag('gobierno', this)">Gobierno</div>
+        <div class="tag" data-tag="actividades" onclick="filterTag('actividades', this)">Actividades</div>
+        <div class="tag" data-tag="perfiles" onclick="filterTag('perfiles', this)">Perfiles</div>
+      </div>
+    </div>
+
+    <main>
+      <section class="feed" id="feed" aria-live="polite">
+
+        <!-- Banda -->
+        <article class="card" data-tags="banda">
+          <img class="media" src="https://www.facebook.com/photo.php?fbid=777655928384148&set=pb.100084192440304.-2207520000&type=3&locale=es_LA" alt="Concurso de la banda escolar" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-10-02">02 Oct 2025</time> • Banda escolar</div>
+            <h3 class="title">La banda pierde el 3er lugar</h3>
+            <p class="excerpt">La banda del colegio obtuvo el 3er lugar en el concurso de mineros, por la mala coordinación con el instructor y estudiantes.</p>
+            <button class="readmore" onclick="openModal(0)">Leer más</button>
+          </div>
+        </article>
+
+        <article class="card" data-tags="banda">
+          <img class="media" src="https://www.facebook.com/photo.php?fbid=721900340626374&set=pb.100084192440304.-2207520000&type=3&locale=es_LA" alt="Ensayo de la banda" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-09-25">25 Sep 2025</time> • Ensayos</div>
+            <h3 class="title">LA BANDA QUIERE VOLVER A SU PRIME</h3>
+            <p class="excerpt">Los ensayos de la banda se volvieron mas estrictos, estudiantes comentan que los nuevos instructores de cada seccion estan haciendo mas rigurosos los ensayos alargando tambien los horarios en la banda. Sera que la banda vuelve a la gloria este 2025? </p>
+            <button class="readmore" onclick="openModal(1)">Leer más</button>
+          </div>
+        </article>
+
+        <!-- Gobierno estudiantil -->
+        <article class="card" data-tags="gobierno">
+          <img class="media" src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1200&q=60" alt="Reunión del gobierno estudiantil" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-10-01">01 Oct 2025</time> • Gobierno Estudiantil</div>
+            <h3 class="title">Gobierno estudiantil No hace una buena gestion!</h3>
+            <p class="excerpt">Estudiantes comentan que el gobierno estudiantil deberia alargar los recreos!</p>
+            <button class="readmore" onclick="openModal(2)">Leer más</button>
+          </div>
+        </article>
+
+
+
+        <!-- Actividades escolares -->
+        <article class="card" data-tags="actividades">
+          <img class="media" src="https://es.pinterest.com/pin/305541155989462352/" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-09-18">18 Sep 2025</time> • Actividades</div>
+            <h3 class="title">La Defensa de proyectos esta acabando con nosotros!!</h3>
+            <p class="excerpt">Estudiantes del BTH de sistemas se quejan sobre lo cansador que es tener que charlar con chat gpt buscando la solucion aun codigo y que prefiririan haber entrado a gastronomia para mejor estresarse en huevo 2.</p>
+            <button class="readmore" onclick="openModal(4)">Leer más</button>
+          </div>
+        </article>
+
+        <article class="card" data-tags="actividades">
+          <img class="media" src="https://lens.usercontent.google.com/image?vsrid=CMOGgeWmsLvYnQEQAhgBIiRkNWZmNzA3MS00YWYwLTRlMTQtOGYzNy05ZWNhMmVlODdmMmUyBiICY2YoATi1o-XGxpOQAw&gsessionid=cqKY00dhywBGzkaQdOTB_692yyUoSni4LFFZiurLaQ0EGBU3kfqyYA" alt="Festejos" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-09-30">30 Sep 2025</time> • Festejos</div>
+            <h3 class="title">El dia del estudiante fue una decepcion</h3>
+            <p class="excerpt">Los estudiantes de J.A.P. se quejan de que no hubo actividades interesantes y que la organización fue improvisada. Regresen los paseos escolares!!.</p>
+            <button class="readmore" onclick="openModal(5)">Leer más</button>
+          </div>
+        </article>
+
+        <!-- Perfiles -->
+        <article class="card" data-tags="perfiles">
+          <img class="media" src="https://www.bing.com/images/search?view=detailV2&insightstoken=bcid_Tnbd4PUqIgUJIaoxNqCT8boWidOz.....zI*ccid_dt3g9Soi&form=SBIWPA&vsimg=https%3a%2f%2fwww.bing.com%2fimages%2fblob%3fbcid%3dTnbd4PUqIgUJqxcxoNWLuD9SqbotqVTdPys&iss=SBIUPLOADGET&sbisrc=ImgPicker&idpbck=1&selectedindex=0&id=-1570894062&ccid=dt3g9Soi&exph=1500&expw=1125&vt=3&sim=11&cal=0&cab=1&cat=0&car=1" alt="Noticias 6to C" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-09-12">12 Sep 2025</time> • Noticias 6to C</div>
+            <h3 class="title">Ocamponcito Rompe el silencio</h3>
+            <p class="excerpt">Ocamponcito Rompe el silencio tras la terrible confesion que se realizo de manera anonima y descarada que el "NO ES GAY" y niega rotundamente tener una relacion de 3 con suxo, aldahir y denilson,nos llama a la relfexion a tomar en cuenta los sentimientos de los otros y a no desinformar de esa manera.</p>
+            <button class="readmore" onclick="openModal(6)">Leer más</button>
+          </div>
+        </article>
+
+        <article class="card" data-tags="perfiles">
+          <img class="media" src="https://www.facebook.com/photo.php?fbid=122143408910740314&set=pb.61572209426882.-2207520000&type=3" />
+          <div class="content">
+            <div class="meta"><time datetime="2025-08-30">30 Ago 2025</time> • Estudiante</div>
+            <h3 class="title">La promocion 2025 sale en la television</h3>
+            <p class="excerpt">La promocion fue invitada a unos juegos del programa ultimo nivel en el que participaron y lamentablemente perdieron tras la mala organizacion como promocion. aunque comentan que a pesar de haber perdido ganaron la experiencia de poder divertirse y tener 2 seg de fama.</p>
+            <button class="readmore" onclick="openModal(7)">Leer más</button>
+          </div>
+        </article>
+
+      </section>
+
+      <aside class="sidebar" aria-label="Barra lateral">
+        <div class="widget">
+          <h3>Eventos próximos</h3>
+          <ul style="padding-left:16px;color:#0b1220;">
+            <li><strong>12 Oct:</strong> Concurso de bandas</li>
+            <li><strong>20 Oct:</strong> Asamblea estudiantil</li>
+            <li><strong>05 Nov:</strong> Feria de ciencias</li>
+          </ul>
+        </div>
+
+        <div class="widget">
+          <h3>Entradas recientes</h3>
+          <div class="small-list">
+            <a href="#" onclick="openModal(0)"><img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=400&q=60" alt="Banda miniatura"/> <div><strong>Banda: Festival regional</strong><div style="font-size:12px;color:var(--muted)">02 Oct 2025</div></div></a>
+            <a href="#" onclick="openModal(2)"><img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=400&q=60" alt="Gobierno miniatura"/> <div><strong>Comedor mejorado</strong><div style="font-size:12px;color:var(--muted)">01 Oct 2025</div></div></a>
+          </div>
+        </div>
+
+        <div class="widget">
+          <h3>Contacto</h3>
+          <p style="margin:0 0 8px 0;color:#0b1220;">¿Quieres enviar una nota o foto? Envía un email al equipo de la revista.</p>
+          <button class="readmore" onclick="window.location.href='mailto:revista@colegio.edu'">Enviar</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <p>© 2025 Revista Escolar — Proyecto Estático. Hecho con HTML, CSS y JavaScript.</p>
+    </footer>
+  </div>
+
+  <!-- Modal templates (hidden content para cada noticia) -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="box" id="modalBox">
+      <button class="close" aria-label="Cerrar" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // Datos de noticias (simulado) - en sitio real esto sería generado o cargado estáticamente
+    const noticias = [
+      {id:0, title:'La banda deslumbra en el festival regional', date:'02 Oct 2025', tag:'banda', content:'La banda del colegio obtuvo el primer lugar en el festival regional. La actuación incluyó piezas clásicas y arreglos modernos preparados por el profesor Rivera. Los estudiantes destacaron por su disciplina y energía en escena.'},
+      {id:1, title:'Nueva rutina de ensayos prepara a la banda para el viaje', date:'25 Sep 2025', tag:'banda', content:'Se anunciaron ensayos diarios durante tres semanas para preparar el repertorio del viaje nacional en noviembre. Se han formado secciones de trabajo para metales, maderas y percusión.'},
+      {id:2, title:'Gobierno estudiantil aprueba mejoras en el comedor', date:'01 Oct 2025', tag:'gobierno', content:'Las mejoras incluyen más mesas, zonas de sombra y un menú con opciones vegetarianas. El presupuesto fue aprobado por votación estudiantil con apoyo del consejo directivo.'},
+      {id:3, title:'Comienzan las campañas para las elecciones estudiantiles', date:'10 Sep 2025', tag:'gobierno', content:'Los candidatos presentaron sus propuestas en la asamblea general. Entre las propuestas: más espacios de estudio, actividades deportivas nocturnas y charlas de orientación vocacional.'},
+      {id:4, title:'Feria de ciencias: innovación y creatividad', date:'18 Sep 2025', tag:'actividades', content:'Los proyectos destacaron por su enfoque en sostenibilidad: un sistema de recolección de agua de lluvia, sensores de calidad de aire y prototipos de huertos verticales.'},
+      {id:5, title:'Taller de liderazgo para jóvenes organizadores', date:'30 Sep 2025', tag:'actividades', content:'Se trabajaron habilidades de organización, comunicación y resolución de conflictos. Los asistentes desarrollaron microproyectos que serán presentados en la asamblea escolar.'},
+      {id:6, title:'Perfil: Sra. Gómez, impulso a las artes en la escuela', date:'12 Sep 2025', tag:'perfiles', content:'La Sra. Gómez ha liderado la expansión del programa de teatro y música. Sus metodologías incluyen proyectos prácticos y colaboración con artistas locales.'},
+      {id:7, title:'Estudiante del mes: Juan Pérez y su proyecto de reciclaje', date:'30 Ago 2025', tag:'perfiles', content:'Juan organizó una campaña que redujo los residuos del colegio un 30%. Trabajó con profesores y con el personal de mantenimiento para instalar puntos de reciclaje.'}
+    ];
+
+    // Modal
+    function openModal(id){
+      const noticia = noticias.find(n => n.id===id);
+      const modal = document.getElementById('modal');
+      const content = document.getElementById('modalContent');
+      content.innerHTML = `<h2>${noticia.title}</h2><p style=\"color:var(--muted)\">${noticia.date} • ${noticia.tag}</p><p>${noticia.content}</p>`;
+      modal.style.display='flex';
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){
+      const modal = document.getElementById('modal');
+      modal.style.display='none';
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    // Search & filtering
+    const searchInput = document.getElementById('search');
+    searchInput.addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      filterByQuery(q);
+    });
+    function filterByQuery(q){
+      const cards = document.querySelectorAll('.feed .card');
+      cards.forEach(card => {
+        const title = card.querySelector('.title').textContent.toLowerCase();
+        const excerpt = card.querySelector('.excerpt').textContent.toLowerCase();
+        const matches = title.includes(q) || excerpt.includes(q);
+        card.style.display = matches ? 'flex' : 'none';
+      });
+    }
+
+    // Tag filter
+    function filterTag(tag, el){
+      document.querySelectorAll('.tag').forEach(t=>t.classList.remove('active'));
+      el.classList.add('active');
+      const cards = document.querySelectorAll('.feed .card');
+      cards.forEach(card => {
+        if(tag==='all'){card.style.display='flex';return}
+        const tags = card.getAttribute('data-tags');
+        card.style.display = tags.includes(tag) ? 'flex' : 'none';
+      });
+    }
+
+    // Accessibility: close modal with Escape
+    window.addEventListener('keydown', e => {if(e.key==='Escape') closeModal()});
+
+    // Responsive hint: touch to scroll
+    document.addEventListener('touchstart', ()=>{});
+  </script>
+</body>
+</html>
